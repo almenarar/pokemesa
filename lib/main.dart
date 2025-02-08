@@ -101,7 +101,7 @@ SingleChildScrollView(child:  Padding(
 
   Widget _buildHighlightCards() {
     return SizedBox(
-      height: 200,
+      height: 300,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: highlightCards.length,
@@ -110,7 +110,7 @@ SingleChildScrollView(child:  Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: GestureDetector(
               onTap: () => _showImagePopup(context, highlightCards[index]),
-              child: Image.network(highlightCards[index], width: 160, height: 180),
+              child: Image.network(highlightCards[index], width: 200, height: 220),
             )
           );
         },
@@ -119,22 +119,30 @@ SingleChildScrollView(child:  Padding(
   }
 
   Widget _buildAllCards() {
-    return GridView.builder(
-      padding: EdgeInsets.all(8.0),
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3, 
-        crossAxisSpacing: 8, 
-        mainAxisSpacing: 8
-      ),
-      itemCount: allCards.length,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () => _showImagePopup(context, highlightCards[index]),
-          child: Image.network(allCards[index], width: 80, height: 100),
+    return LayoutBuilder(
+        builder: (context, constraints) {
+          // Calculate the number of columns based on screen width
+          double screenWidth = constraints.maxWidth;
+          int crossAxisCount = screenWidth > 1400 ? 6 : (screenWidth > 1000 ? 5 : (screenWidth > 600 ? 4 : (screenWidth > 400 ? 3 : 2)));
+
+          return GridView.builder(
+            padding: EdgeInsets.all(8.0),
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount, 
+              crossAxisSpacing: 8, 
+              mainAxisSpacing: 8
+            ),
+            itemCount: allCards.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () => _showImagePopup(context, highlightCards[index]),
+                child: Image.network(allCards[index], width: 80, height: 100),
+              );
+          }
         );
-      },
+        },
     );
   }
 
