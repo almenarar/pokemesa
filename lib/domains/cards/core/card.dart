@@ -2,25 +2,31 @@ import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
-class Cards extends Equatable {
+class PokemonCard extends Equatable {
   final String id;
   final String pokemon;
   final String collection;
   final String imageURL;
+  final double price;
+  final String rarity;
 
-  const Cards({
+  const PokemonCard({
     required this.id,
     required this.pokemon,
     required this.collection,
     required this.imageURL,
+    required this.price,
+    required this.rarity,
   });
 
-  factory Cards.fromJson(Map<String, dynamic> json) {
-    return Cards(
+  factory PokemonCard.fromJson(Map<String, dynamic> json) {
+    return PokemonCard(
       id: json['ID'] as String,
       pokemon: Utf8Decoder().convert(json['Pokemon'].toString().codeUnits),
       collection: json['Collection'] as String,
       imageURL: json['ImageURL'] as String,
+      price: json['Price'] as double,
+      rarity: json['Rarity'] as String,
     );
   }
 
