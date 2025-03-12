@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pokemesa/domains/cards/core/card.dart';
+import 'package:pokemesa/domains/cards/core/domain.dart';
 import 'package:pokemesa/views/card_detail.dart';
 import 'package:pokemesa/views/commons.dart';
+import 'package:pokemesa/views/private_home.dart';
 
 class SearchResultsPage extends StatefulWidget {
-  const SearchResultsPage({super.key, required this.query});
 
+
+  const SearchResultsPage({super.key, required this.query, required this.cardService});
+
+  final CardService cardService;
   final String query;
 
   @override
@@ -17,41 +22,41 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     await Future.delayed(Duration(seconds: 1)); // Simulate network delay
     List<PokemonCard> database = [
       PokemonCard(
-        id: "",
+        id: 0,
         pokemon: "Pikachu",
-        imageURL: "https://images.pokemontcg.io/base1/58.png",
+        imageURL: "https://assets.tcgdex.net/pt/sv/sv08.5/179",
         collection: "Base Set",
         price: 25.99,
         rarity: "Common",
       ),
       PokemonCard(
-        id: "",
-        pokemon: "Pikachu",
-        imageURL: "https://images.pokemontcg.io/xy10/42.png",
+        id: 0,
+        pokemon: "Pupitar",
+        imageURL: "https://assets.tcgdex.net/pt/sv/sv03/106",
         collection: "Fates Collide",
         rarity: "Rare",
         price: 18.99,
       ),
       PokemonCard(
-        id: "",
-        pokemon: "Pikachu",
-        imageURL: "https://images.pokemontcg.io/sm12/55.png",
+        id: 0,
+        pokemon: "Prinlup",
+        imageURL: "https://assets.tcgdex.net/pt/xy/xy8/37",
         collection: "Cosmic Eclipse",
         rarity: "Ultra Rare",
         price: 39.99,
       ),
       PokemonCard(
-        id: "",
-        pokemon: "Pikachu",
-        imageURL: "https://images.pokemontcg.io/base1/4.png",
+        id: 0,
+        pokemon: "Charizard",
+        imageURL: "https://assets.tcgdex.net/pt/sv/sv03.5/006",
         collection: "Base Set",
         price: 299.99,
         rarity: "Rare Holo",
       ),
       PokemonCard(
-        id: "",
-        pokemon: "Pikachu",
-        imageURL: "https://images.pokemontcg.io/base1/44.png",
+        id: 0,
+        pokemon: "Bulbasaur",
+        imageURL: "https://assets.tcgdex.net/pt/swsh/swsh10.5/001",
         collection: "Base Set",
         price: 10.50,
         rarity: "Common",
@@ -60,6 +65,22 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     return database
         .where((card) => card.pokemon.toLowerCase().startsWith(widget.query.toLowerCase()))
         .toList();
+  }
+
+  void addInMyCollection(BuildContext context, PokemonCard card) async {
+    await showDialog(context: context, builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("${card.pokemon} adicionado à sua coleção"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Valeu!"),
+          ),
+        ],
+      );
+    });
+    await widget.cardService.createCard(card);
+    Navigator.pop(context);
   }
 
   @override
@@ -91,7 +112,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                         width: 120, // Increase width
                         height: 160, // Increase height
                         child: Image.network(
-                          card.imageURL,
+                          "${card.imageURL}/low.png",
                           fit: BoxFit.contain, // Ensure full image is visible
                         ),
                       ),
@@ -130,7 +151,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                               ),
                               SizedBox(height: 13),
                               ElevatedButton(
-                                onPressed: () => print("Added ${card.pokemon} to collection"),
+                                onPressed: () => addInMyCollection(context, card),
                                 child: Text("Minha coleção"),
                               ),
                               SizedBox(height: 13),

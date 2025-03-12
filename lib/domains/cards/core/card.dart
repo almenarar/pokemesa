@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 
 class PokemonCard extends Equatable {
-  final String id;
+  final int id;
   final String pokemon;
   final String collection;
   final String imageURL;
@@ -21,7 +21,7 @@ class PokemonCard extends Equatable {
 
   factory PokemonCard.fromJson(Map<String, dynamic> json) {
     return PokemonCard(
-      id: json['ID'] as String,
+      id: json['ID'] as int,
       pokemon: Utf8Decoder().convert(json['Pokemon'].toString().codeUnits),
       collection: json['Collection'] as String,
       imageURL: json['ImageURL'] as String,

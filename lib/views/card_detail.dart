@@ -4,7 +4,7 @@ import 'package:pokemesa/domains/cards/core/card.dart';
 class CardDetailPage extends StatefulWidget {
   final PokemonCard card;
 
-  CardDetailPage({super.key, required this.card});
+  const CardDetailPage({super.key, required this.card});
 
   @override
   _CardDetailPageState createState() => _CardDetailPageState();
@@ -31,7 +31,7 @@ class _CardDetailPageState extends State<CardDetailPage> {
             // Large Image
             Center(
               child: Image.network(
-                widget.card.imageURL,
+                "${widget.card.imageURL}/low.png",
                 height: 300,
                 fit: BoxFit.contain,
               ),

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:pokemesa/domains/cards/core/card.dart';
+import 'package:pokemesa/domains/cards/core/domain.dart';
 import 'package:pokemesa/views/commons.dart';
+import 'package:pokemesa/views/edit_collection.dart';
 import 'package:pokemesa/views/profile.dart';
 import 'package:pokemesa/views/search_results.dart';
 
 class PrivateHomePage extends StatefulWidget {
-  const PrivateHomePage({super.key});
+  final CardService cardService;
+
+  const PrivateHomePage({super.key, required this.cardService});
 
   @override
   State<PrivateHomePage> createState() => _PrivateHomePageState();
@@ -17,7 +20,7 @@ class _PrivateHomePageState extends State<PrivateHomePage> {
   final List<String> actions = [
     "Ver meu perfil público", 
     "Editar minha coleção",
-    "Mercado de cartas",
+    "Lista de desejos",
     "Minhas conversas",
     "Meus amigos",
     "Gerenciar minha conta",
@@ -32,21 +35,27 @@ class _PrivateHomePageState extends State<PrivateHomePage> {
     Icons.edit
   ];
 
-  final List<Widget> actionDestinations = [
-    ProfilePage(),
-    ProfilePage(),
-    ProfilePage(),
-    ProfilePage(),
-    ProfilePage(),
-    ProfilePage(),
-  ];
+  late List<Widget> actionDestinations;
+
+  @override
+  void initState() {
+    super.initState();
+    actionDestinations = [
+      ProfilePage(cardService: widget.cardService,),
+      EditCollectionPage(cardService: widget.cardService,),
+      ProfilePage(cardService: widget.cardService,),
+      ProfilePage(cardService: widget.cardService,),
+      ProfilePage(cardService: widget.cardService,),
+      ProfilePage(cardService: widget.cardService,),
+    ];
+  }
 
   void _search(BuildContext context) {
     String query = _searchController.text.trim();
     if (query.isNotEmpty) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => SearchResultsPage(query: query)),
+        MaterialPageRoute(builder: (context) => SearchResultsPage(query: query, cardService: widget.cardService,)),
       );
     }
   }

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pokemesa/domains/cards/core/card.dart';
+import 'package:pokemesa/domains/cards/core/domain.dart';
 import 'package:pokemesa/views/commons.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final CardService cardService;
+
+  const ProfilePage({super.key, required this.cardService});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -14,13 +17,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   List<PokemonCard> full = [];
 
-  final List<String> highlightCards = [
-    "https://assets.tcgdex.net/en/xy/xyp/XY78",
-    "https://assets.tcgdex.net/en/xy/xyp/XY78",
-    "https://assets.tcgdex.net/en/xy/xyp/XY78",
-    "https://assets.tcgdex.net/en/xy/xyp/XY78",
-    "https://assets.tcgdex.net/en/xy/xyp/XY78",
-  ];
+  List<PokemonCard> highlightCards = [];
 
   final String userName = "Ash Ketchum";
   final int totalCards = 250;
@@ -34,16 +31,11 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _fetchData() async {
+    var lowcard = await widget.cardService.getAllCards();
+      var highcard = await widget.cardService.getAllHighlightCards();
     setState(() {
-      full = [
-        PokemonCard(id: "1", pokemon: "Chespin", collection: "xyp-XY88", imageURL: "https://assets.tcgdex.net/en/xy/xyp/XY88", price: 10, rarity: "Common"),
-        PokemonCard(id: "1", pokemon: "Pikachu", collection: "xyp-XY89", imageURL: "https://assets.tcgdex.net/en/xy/xyp/XY89", price: 10, rarity: "Common"),
-        PokemonCard(id: "1", pokemon: "Sableye", collection: "xyp-XY92", imageURL: "https://assets.tcgdex.net/en/xy/xyp/XY92", price: 10, rarity: "Common"),
-        PokemonCard(id: "1", pokemon: "Umbreon", collection: "xyp-XY96", imageURL: "https://assets.tcgdex.net/en/xy/xyp/XY96", price: 10, rarity: "Common"),
-        PokemonCard(id: "1", pokemon: "Regigigas", collection: "xyp-XY82", imageURL: "https://assets.tcgdex.net/en/xy/xyp/XY82", price: 10, rarity: "Common"),
-        PokemonCard(id: "1", pokemon: "Pikachu EX", collection: "xyp-XY84", imageURL: "https://assets.tcgdex.net/en/xy/xyp/XY84", price: 10, rarity: "Common"),
-        PokemonCard(id: "1", pokemon: "Champions Festival", collection: "xyp-XY91", imageURL: "https://assets.tcgdex.net/en/xy/xyp/XY91", price: 10, rarity: "Common")
-      ];
+      full = lowcard;
+      highlightCards = highcard;
     });
   }
 
@@ -110,13 +102,16 @@ class _ProfilePageState extends State<ProfilePage> {
       height: 300,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: highlightCards.length,
+        itemCount: highlightCards.isEmpty ? 1 : highlightCards.length,
         itemBuilder: (context, index) {
+          if (highlightCards.isEmpty) {
+                return Text("Você ainda não possui cartas");
+              }
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: GestureDetector(
-              onTap: () => _showImagePopup(context, highlightCards[index]),
-              child: Image.network("${highlightCards[index]}/low.png", width: 200, height: 220),
+              onTap: () => _showImagePopup(context, highlightCards[index].imageURL),
+              child: Image.network("${highlightCards[index].imageURL}/low.png", width: 200, height: 220),
             )
           );
         },
@@ -176,8 +171,11 @@ class _ProfilePageState extends State<ProfilePage> {
               crossAxisSpacing: 8, 
               mainAxisSpacing: 8
             ),
-            itemCount: full.length,
+            itemCount: full.isEmpty ? 1 : full.length,
             itemBuilder: (context, index) {
+              if (full.isEmpty) {
+                return Text("Você ainda não possui cartas");
+              }
               return GestureDetector(
                 onTap: () => _showImagePopup(context, full[index].imageURL),
                 child: Image.network("${full[index].imageURL}/low.png", width: 80, height: 100),
